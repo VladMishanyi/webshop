@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    restart: always
+    ports:
+      - '13306:3306'
+    environment:
+      MYSQL_DATABASE: db_database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: ytrewq
+      MYSQL_ROOT_PASSWORD: qwerty
+    command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-time-zone=+00:00' ]
+    volumes:
+      - volume_db:/var/lib/mysql #we need this to store all data that we are adding to table
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql #we need this to store database schema
+    networks:
+      - network_demo
+
+volumes:
+  volume_db:
+    # For details, see:
+    # https://docs.docker.com/engine/reference/commandline/volume_create/#driver-specific-options
+    driver: local
+    driver_opts:
+      o: "size=2G"
+      device: tmpfs
+      type: tmpfs
+
+networks:
+  network_demo:
+    driver: bridge
